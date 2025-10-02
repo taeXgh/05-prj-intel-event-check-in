@@ -347,6 +347,30 @@ select {
   color: #475569;
 }
 
+/* Attendee Lists */
+.attendee-list {
+  list-style: none;
+  margin-top: 2px; /* Reduce top margin */
+  padding-left: 0;
+  font-size: 15px;
+  color: #333;
+  text-align: center; /* Center the names */
+  word-break: break-word;
+}
+
+.attendee-list li {
+  padding: 2px 0 2px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Label for attendee names */
+.attendee-label {
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 0; /* Reduce bottom margin */
+  text-align: center;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .hero {

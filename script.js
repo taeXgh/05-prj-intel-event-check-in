@@ -6,9 +6,46 @@ const greeting = document.getElementById("greeting");
 const attendeeCount = document.getElementById("attendeeCount");
 const progressBar = document.getElementById("progressBar");
 
+const teamLists = {
+  water: document.getElementById("waterList"),
+  zero: document.getElementById("zeroList"),
+  power: document.getElementById("powerList"),
+};
+
 // Track attendance
 let count = 0;
 const maxCount = 50;
+
+// Load count from localStorage if it exists
+if (localStorage.getItem("attendeeCount")) {
+  count = parseInt(localStorage.getItem("attendeeCount"));
+  attendeeCount.textContent = count;
+  const percentage = Math.round((count / maxCount) * 100);
+  progressBar.style.width = percentage + "%";
+}
+
+// Load team counters from localStorage
+const teamIds = ["waterCount", "zeroCount", "powerCount"];
+for (let i = 0; i < teamIds.length; i++) {
+  const teamId = teamIds[i];
+  const saved = localStorage.getItem(teamId);
+  if (saved !== null) {
+    document.getElementById(teamId).textContent = saved;
+  }
+}
+
+// Load attendee lists from localStorage
+for (let team in teamLists) {
+  let savedList = localStorage.getItem(team + "List");
+  if (savedList) {
+    let attendees = JSON.parse(savedList);
+    for (let i = 0; i < attendees.length; i++) {
+      let li = document.createElement("li");
+      li.textContent = attendees[i];
+      teamLists[team].appendChild(li);
+    }
+  }
+}
 
 // Handle form submission
 form.addEventListener("submit", function (event) {
@@ -29,9 +66,28 @@ form.addEventListener("submit", function (event) {
   const percentage = Math.round((count / maxCount) * 100);
   progressBar.style.width = percentage + "%";
 
+  // Save count to localStorage
+  localStorage.setItem("attendeeCount", count);
+
   // Update team counter
   const teamCounter = document.getElementById(team + "Count");
-  teamCounter.textContent = parseInt(teamCounter.textContent) + 1;
+  const newTeamCount = parseInt(teamCounter.textContent) + 1;
+  teamCounter.textContent = newTeamCount;
+  // Save team counter to localStorage
+  localStorage.setItem(team + "Count", newTeamCount);
+
+  // Add attendee name to the correct team list
+  let li = document.createElement("li");
+  li.textContent = name;
+  teamLists[team].appendChild(li);
+
+  // Save updated attendee list to localStorage
+  let attendees = [];
+  let listItems = teamLists[team].getElementsByTagName("li");
+  for (let i = 0; i < listItems.length; i++) {
+    attendees.push(listItems[i].textContent);
+  }
+  localStorage.setItem(team + "List", JSON.stringify(attendees));
 
   //Show welcome message
   const message = `🎉 Welcome, ${name} from ${teamName}`;
